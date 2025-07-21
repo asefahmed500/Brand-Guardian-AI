@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Guardian AI</title>
+    <style>
+        :root {
+            --primary-color: #64B5F6;
+            --accent-color: #4DB6AC;
+            --background-color: #F5F5F5;
+            --surface-color: #FFFFFF;
+            --text-color: #333333;
+            --muted-text-color: #666666;
+            --border-color: #DDDDDD;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --error-color: #F44336;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .main-header {
+            text-align: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .main-header h2 {
+            margin: 0;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+        .main-header p {
+            font-size: 12px;
+            color: var(--muted-text-color);
+            margin: 4px 0 0;
+        }
+        #tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted-text-color);
+            transition: all 0.2s;
+        }
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        .tab-button:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .tab-content {
+            display: none;
+            padding: 16px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .section {
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+        }
+        h4 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #444;
+        }
+        .description {
+            font-size: 12px;
+            color: var(--muted-text-color);
+            margin-bottom: 12px;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #42a5f5;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #loader {
+            text-align: center;
+            padding: 16px;
+            display: none;
+        }
+        #results { display: none; }
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            background: conic-gradient(var(--success-color) 0deg, var(--border-color) 0deg);
+        }
+        #fixes-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        #fixes-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+        #fixes-list button {
+            padding: 6px 10px;
+            font-size: 12px;
+            background-color: var(--accent-color);
+            width: auto;
+        }
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
+        }
+        .asset-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            padding: 4px;
+            border-radius: 6px;
+        }
+        .asset-item:hover {
+            border-color: var(--accent-color);
+            background-color: #f0f8f7;
+        }
+        .asset-item .img-container {
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        .asset-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .asset-item p {
+            font-size: 11px;
+            margin: 0;
+            text-align: center;
+            color: var(--muted-text-color);
+        }
+        #chat-messages {
+            height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .chat-message { padding: 6px 10px; border-radius: 12px; font-size: 14px; max-width: 85%; }
+        .user-message { background-color: var(--primary-color); color: white; align-self: flex-end; }
+        .assistant-message { background-color: #e0e0e0; color: var(--text-color); align-self: flex-start; }
+        #chat-form { display: flex; gap: 8px; }
+        #chat-input { flex-grow: 1; border: 1px solid #ccc; border-radius: 6px; padding: 8px; font-size: 14px; }
+        #chat-form button { width: auto; padding: 8px 12px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="main-header">
+        <h2>Brand Guardian AI</h2>
+        <p>Your intelligent design assistant.</p>
+    </div>
+
+    <div id="tabs">
+        <button class="tab-button active" data-tab="compliance">Compliance</button>
+        <button class="tab-button" data-tab="brand-kit">Brand Kit</button>
+        <button class="tab-button" data-tab="copy">Brand Voice</button>
+    </div>
+
+    <div id="loader"><p>Thinking...</p></div>
+
+    <!-- Compliance Tab -->
+    <div id="compliance-tab" class="tab-content active">
+        <div class="section">
+            <h4>Live Compliance Check</h4>
+            <p class="description">Real-time brand compliance scoring as you design. Issues will be flagged here.</p>
+            <div id="results">
+                <div class="score-circle" id="score-circle">
+                    <span id="score">...</span>
+                </div>
+                <p style="text-align:center; font-weight: 500;"><strong>Feedback:</strong> <span id="feedback"></span></p>
+            </div>
+            <div id="no-issues" style="text-align: center; padding: 16px; display: none;">
+                <p style="color: var(--success-color); font-weight: 500;">✅ Looking good! No brand issues detected.</p>
+            </div>
+        </div>
+        <div id="fixes-container" class="section" style="display: none;">
+            <h4>Suggested Fixes</h4>
+            <p class="description">One-click enhancements to bring your design into alignment.</p>
+            <ul id="fixes-list"></ul>
+            <button id="instantBrandifyBtn" style="margin-top: 12px; background-color: var(--accent-color);">✨ Instant Brandify</button>
+        </div>
+        <div class="section">
+            <h4>Brandify Template</h4>
+            <p class="description">Choose any Adobe Express template and convert it to match your brand fingerprint.</p>
+            <button id="brandifyTemplateBtn">🎨 Brandify Existing Template</button>
+        </div>
+    </div>
+
+    <!-- Brand Kit Tab -->
+    <div id="brand-kit-tab" class="tab-content">
+        <div class="section">
+            <h4>Brand Navigator</h4>
+            <p class="description">Your brand's cheat sheet for colors and fonts.</p>
+            <div id="brand-navigator-content">
+                 <!-- Populated by JS -->
+            </div>
+        </div>
+        <div class="section">
+            <h4>Asset Library</h4>
+            <p class="description">Drag-and-drop brand-approved logos and icons.</p>
+            <div id="asset-library-grid" class="asset-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        <div class="section">
+            <h4>Design Snippets</h4>
+            <p class="description">Your reusable design components.</p>
+            <button id="saveSnippetBtn" style="margin-bottom: 12px;">Save Current Selection as Snippet</button>
+            <div id="snippet-library-grid" class="asset-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Copy Tab -->
+    <div id="copy-tab" class="tab-content">
+        <div class="section">
+             <h4>AI Copy Assistant</h4>
+             <p class="description">Generate on-brand copy. Just provide a prompt!</p>
+            <div id="chat-messages">
+                <div class="chat-message assistant-message">Try "Write a headline for a summer sale."</div>
+            </div>
+            <form id="chat-form">
+                <input type="text" id="chat-input" placeholder="Enter a prompt..." required>
+                <button type="submit" id="chat-send">Send</button>
+            </form>
+        </div>
+         <div class="section">
+             <h4>Smart Tagline Generator</h4>
+             <p class="description">Generate taglines from your project's mission.</p>
+             <button id="generateTaglinesBtn">Generate Taglines</button>
+             <div id="tagline-results" style="margin-top: 12px;"></div>
+        </div>
+    </div>
+    
+    <script src="https://express-sdks.adobe.com/add-on-sdk/sdk.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
